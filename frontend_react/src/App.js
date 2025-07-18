@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
-// Color palette for minimalistic light theme (from requirements):
-const PRIMARY = "#3f51b5";     // used for main accent elements
-const SECONDARY = "#f50057";   // (e.g., lose/x/score highlight)
-const ACCENT = "#4caf50";      // (e.g., win/o/score highlight)
+/**
+ * Color palette for red/white theme:
+ * PRIMARY: Red - main accent (buttons, highlights)
+ * SECONDARY: Lighter/bright red (for alternate accent)
+ * ACCENT: Pale red/pink (for highlight backgrounds)
+ * These are only used for runtime inline style; the rest is handled by CSS variables.
+ */
+const PRIMARY = "#c70000";     // used for main accent (all main red)
+const SECONDARY = "#ff4747";   // brighter/lighter red - alternate accent
+const ACCENT = "#ffd6d6";      // pale red/pink for highlight cell backgrounds
 
 // PUBLIC_INTERFACE
 function App() {
@@ -98,15 +104,22 @@ function App() {
 
   // Minimal styled board cell
   function Square({ value, onClick, highlight }) {
+    // Use red/white theme:
+    // highlight: faint pink background for winner
+    // X: dark red, O: bright red, empty: gray
     return (
       <button
         className="ttt-square"
         style={{
           background: highlight
-            ? value === "X" ? ACCENT : value === "O" ? SECONDARY : "#e3eafd"
+            ? ACCENT
             : "#fff",
-          color: value === "X" ? PRIMARY : value === "O" ? SECONDARY : "#888",
-          border: `1.5px solid #dee2e6`,
+          color: value === "X"
+            ? PRIMARY
+            : value === "O"
+              ? SECONDARY
+              : "#bbbbbb",
+          border: `1.5px solid #e9b0b0`,
           transition: "background 0.15s, color 0.15s",
         }}
         onClick={onClick}
@@ -137,13 +150,13 @@ function App() {
   let status;
   if (result === "X" || result === "O") {
     status = (
-      <span style={{ color: result === "X" ? PRIMARY : SECONDARY }}>
+      <span style={{ color: "#c70000" }}>
         Winner: <b>{result}</b>
       </span>
     );
   } else if (result === "draw") {
     status = (
-      <span style={{ color: "#6c757d" }}>
+      <span style={{ color: "#ff4747" }}>
         <b>Draw!</b>
       </span>
     );
@@ -151,7 +164,10 @@ function App() {
     status = (
       <>
         Next turn:{" "}
-        <span style={{ color: currentPlayer === "X" ? PRIMARY : SECONDARY, fontWeight: 500 }}>
+        <span style={{
+          color: currentPlayer === "X" ? PRIMARY : SECONDARY,
+          fontWeight: 700
+        }}>
           {currentPlayer}
         </span>
       </>
@@ -213,6 +229,7 @@ function App() {
             letterSpacing: "0.07em",
             color: PRIMARY,
             fontWeight: 800,
+            textShadow: "0 2px 8px #ffd6d6"
           }}
         >
           Tic Tac Toe
@@ -253,7 +270,7 @@ function App() {
           minHeight: "2.4em",
           marginBottom: "1rem",
           fontSize: "1.25rem",
-          fontWeight: 600,
+          fontWeight: 700,
         }}>{status}</div>
         {renderBoard()}
         <section
@@ -272,11 +289,13 @@ function App() {
               border: "none",
               borderRadius: "7px",
               padding: "0.85em 1.4em",
-              fontWeight: 600,
+              fontWeight: 700,
               marginTop: "0.2em",
               fontSize: "1rem",
-              boxShadow: "0 2px 10px -8px #3f51b5",
+              boxShadow: "0 2px 10px -5px #c70000",
               cursor: "pointer",
+              letterSpacing: "0.01em",
+              outline: "none"
             }}
             onClick={handleResetGame}
           >
@@ -284,13 +303,14 @@ function App() {
           </button>
           <button
             style={{
-              background: "#f9f9f9",
-              color: "#555",
-              border: "1px solid #e0e0e0",
+              background: "#fff",
+              color: PRIMARY,
+              border: "1.5px solid #e9b0b0",
               borderRadius: "7px",
               padding: "0.70em 1.3em",
               fontSize: "0.98rem",
               cursor: "pointer",
+              fontWeight: 600,
             }}
             onClick={handleResetScores}
             aria-label="Reset scores"
@@ -298,9 +318,9 @@ function App() {
             Reset Scores
           </button>
         </section>
-        <footer style={{ marginTop: "2.3rem", fontSize: "0.88rem", color: "#888" }}>
+        <footer style={{ marginTop: "2.3rem", fontSize: "0.88rem", color: "#a99", fontWeight: 500 }}>
           <span>
-            <b>Minimal Tic Tac Toe</b> – React | Light theme | {new Date().getFullYear()}
+            <b>Minimal Tic Tac Toe</b> – React | Red/White Theme | {new Date().getFullYear()}
           </span>
         </footer>
       </header>
@@ -311,9 +331,9 @@ function App() {
           flex-direction: column;
           gap: 0;
           margin: 0 auto;
-          box-shadow: 0 2px 14px -8px #bfc4db;
+          box-shadow: 0 2px 14px -8px #f5b6b6;
           border-radius: 16px;
-          background: #fafbfe;
+          background: #fff6f6;
           padding: 0.8rem 0.6rem;
         }
         .ttt-row {
@@ -332,12 +352,16 @@ function App() {
           cursor: pointer;
           user-select: none;
           background: #fff;
+          box-shadow: 0 1px 3px -2px #ffd6d6;
+          border: 1.5px solid #e9b0b0;
+          transition: background 0.14s, color 0.15s;
         }
         .ttt-square:active {
-          background: #ecf1fa;
+          background: #ffd6d6;
         }
         .ttt-large {
           font-size: 2.15rem;
+          font-family: inherit;
         }
         @media (max-width: 480px) {
           .ttt-board { padding: 0.2rem 0.2rem; }
